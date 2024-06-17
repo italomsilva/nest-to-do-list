@@ -1,5 +1,5 @@
 import { dataSource } from "../database/database";
-import UserSchema from "../database/Schemas/UserSchema";
+import UserSchema from "../database/schemas/UserSchema";
 import { MySqlUserRepository } from "../auth/implement/repositoriesMySql/MySqlUserRepositories";
 import { FindAllUsersService } from "src/services/auth/FindAllUsersService";
 import { SignUpService } from "src/services/auth/SIgnUpService";

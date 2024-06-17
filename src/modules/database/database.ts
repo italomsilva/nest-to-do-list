@@ -1,5 +1,5 @@
 import { DataSource } from "typeorm";
-import UserSchema from "./Schemas/UserSchema";
+import UserSchema from "./schemas/UserSchema";
 
 export const dataSource = new DataSource({
   type: 'mysql',
