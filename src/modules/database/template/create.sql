@@ -18,9 +18,9 @@ updated_at DATETIME
 CREATE TABLE tasks (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    description TEXT,
+    description VARCHAR(255) NOT NULL,
     duration INT NOT NULL,
     type VARCHAR(50) NOT NULL,
     owner_user VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP
 );

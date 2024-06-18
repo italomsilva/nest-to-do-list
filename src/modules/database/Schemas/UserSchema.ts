@@ -25,16 +25,16 @@ const UserSchema = new EntitySchema<User>({
     phone: {
       type: 'varchar',
       length: 255,
-      nullable: false,
+      nullable: true,
     },
     createdAt: {
-      name: 'createdAt',
+      name: 'created_at',
       type: 'datetime',
       createDate: true,
       nullable: false,
     },
     updatedAt: {
-      name: 'updatedAt',
+      name: 'updated_at',
       type: 'datetime',
       updateDate: true,
       nullable: false,
