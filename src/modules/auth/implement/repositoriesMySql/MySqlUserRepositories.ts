@@ -36,8 +36,7 @@ export class MySqlUserRepository implements UserRepository {
 
   async delete(id: string): Promise<void> {
     const queryString = `
-      UPDATE users
-      SET deletedAt = NOW()
+      DELETE FROM users
       WHERE id = '${id}';
     `;
     await this.repository.query(queryString);
@@ -47,8 +46,7 @@ export class MySqlUserRepository implements UserRepository {
     const queryString = `
       SELECT *
       FROM users
-      WHERE email = '${email}' 
-      AND deleted_at IS NULL;
+      WHERE email = '${email}'
     `;
     const result = await this.repository.query(queryString);
     return result.length ? User.fromDatabase(result[0]) : null;

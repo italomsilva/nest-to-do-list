@@ -17,9 +17,9 @@ export class TaskSchema {
     @Column({ type: 'varchar', length: 50, nullable: false })
     type: string;
 
-    @Column({ type: 'varchar', length: 255, nullable: false})
-    owner_user: string;
+    @Column({ name: 'owner_user', type: 'varchar', length: 255, nullable: false})
+    ownerUser: string;
 
-    @CreateDateColumn({ type: 'timestamp'})
-    created_at: Date;
+    @CreateDateColumn({ name: 'created_at', type: 'timestamp'})
+    createdAt: Date;
 }

@@ -21,6 +21,6 @@ CREATE TABLE tasks (
     description VARCHAR(255) NOT NULL,
     duration INT NOT NULL,
     type VARCHAR(50) NOT NULL,
-    owner_user VARCHAR(50),
+    owner_user VARCHAR(255),
     created_at TIMESTAMP
 );

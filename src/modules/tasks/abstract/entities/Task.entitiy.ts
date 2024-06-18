@@ -32,7 +32,7 @@ export class Task {
             name: data.name,
             createdAt: data.created_at,
             duration:data.duration,
-            ownerUser:data.owner_user,
+            ownerUser: data.owner_user,
             type:data.type
         });
     }
