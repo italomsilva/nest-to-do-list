@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import UserSchema from "./schemas/UserSchema";
+import { TaskSchema } from "./schemas/TaskSchema";
 
 export const dataSource = new DataSource({
   type: 'mysql',
@@ -9,7 +10,8 @@ export const dataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [
-    UserSchema
+    UserSchema,
+    TaskSchema
   ],
   synchronize: true,
   logging: false,

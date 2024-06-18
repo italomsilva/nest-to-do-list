@@ -8,7 +8,7 @@ export class MySqlUserRepository implements UserRepository {
     const queryString = `
       SELECT *
       FROM users
-      WHERE id = '${id}' AND deleted_at IS NULL;
+      WHERE id = '${id}';
     `;
     const result = await this.repository.query(queryString);
     return result.length ? User.fromDatabase(result[0]) : null;

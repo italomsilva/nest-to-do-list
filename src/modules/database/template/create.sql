@@ -1,18 +1,26 @@
 DROP DATABASE IF EXISTS testtodo;
 
--- Criar o banco de dados novamente
 CREATE DATABASE testtodo;
 
--- Usar o banco de dados recém-criado
 USE testtodo;
 
--- Criar a tabela users
+-- Tabela users
 CREATE TABLE users (
 id VARCHAR(255) NOT NULL PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL UNIQUE,
 password VARCHAR(255) NOT NULL,
 phone VARCHAR(20),
-createdAt DATETIME,
-updatedAt DATETIME
+created_at DATETIME,
+updated_at DATETIME
+);
+-- Tabela tasks
+CREATE TABLE tasks (
+    id VARCHAR(255) NOT NULL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    duration INT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    owner_user VARCHAR(50),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
