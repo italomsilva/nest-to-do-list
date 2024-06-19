@@ -1,5 +1,4 @@
-import { HashPassword } from "../../Service/HashPassword";
-import { UUID } from "../../Service/UUID";
+import { UUID } from "../../utils/UUID";
 
 export class User {
     id:string;
@@ -29,9 +28,11 @@ export class User {
 
     static fromDatabase(data:any):User{
         const newUser = new User ({
+            id: data.id,
             name: data.name,
             email: data.email,
             password: data.password,
+            phone: data.phone,
             createdAt: data.created_at,
             updatedAt: data.updated_at
         })

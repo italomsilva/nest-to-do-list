@@ -16,4 +16,9 @@ export class UserController {
   async signUp(@Body() body:any):Promise<User> {
     return this.userService.signUp(body);
   }
+
+  @Post('find-all')
+  async findAll():Promise<User[]>{
+    return await this.userService.findAll();
+  }
 }

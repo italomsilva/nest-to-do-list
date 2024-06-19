@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserSchema } from '../Models/User/UserSchema';
+import { UserSchema } from 'src/Models/User/UserSchema';
 import { Repository } from 'typeorm';
 import { User } from 'src/Models/User/UserEntity';
-import { HashPassword } from './HashPassword';
+import { HashPassword } from '../utils/HashPassword';
 
 @Injectable()
 export class UserService {
@@ -30,6 +30,13 @@ export class UserService {
     saveUser.password = await HashPassword.hashPassword(saveUser.password);
     await this.userRepository.save(saveUser);
     return newUser;
+  }
+
+  async findAll():Promise<User[]>{
+    const queryString = `SELECT * FROM users`;
+    const users = await this.userRepository.query(queryString);
+    const usersFormated:User[] = users.map((user)=> User.fromDatabase(user));
+    return usersFormated;
   }
 
 }
