@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class AuthService {
+export class JwtAuthService {
   constructor(private readonly jwtService: JwtService) {}
 
   async generateToken(userId: string, email: string): Promise<string> {
@@ -12,10 +12,9 @@ export class AuthService {
 
   async validateToken(token: string): Promise<any> {
     try {
-      const decoded = this.jwtService.verify(token);
-      return decoded;
+      return this.jwtService.verify(token);
     } catch (e) {
-      throw new Error('INVALID TOKEN');
+      return null;
     }
   }
 }

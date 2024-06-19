@@ -1,6 +1,12 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-@Entity({name: 'users'})
+@Entity({ name: 'users' })
 export class UserSchema {
   @PrimaryColumn({ type: 'varchar', length: 255 })
   id: string;
@@ -22,4 +28,7 @@ export class UserSchema {
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   password: string;
+
+  @Column({ name: 'auth_token', length: 255, nullable: true })
+  authToken: string;
 }

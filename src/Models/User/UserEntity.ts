@@ -8,6 +8,7 @@ export class User {
     phone:string | null;
     createdAt:Date;
     updatedAt:Date;
+    authToken:string;
     constructor( userData:{
         id?:string | null,
         name:string,
@@ -15,7 +16,8 @@ export class User {
         password:string,
         phone?:string | null,
         createdAt?:Date | null,
-        updatedAt?:Date | null
+        updatedAt?:Date | null,
+        authToken?:string | null
     }){
         this.id= userData.id? userData.id: UUID.randomUUID();
         this.name = userData.name;
@@ -24,7 +26,8 @@ export class User {
         this.phone = userData.phone? userData.phone: null;
         this.createdAt = userData.createdAt? userData.createdAt: new Date();
         this.updatedAt = userData.updatedAt? userData.updatedAt: new Date();
-        }
+        this.authToken = userData.authToken? userData.authToken: null
+    }
 
     static fromDatabase(data:any):User{
         const newUser = new User ({
@@ -34,7 +37,8 @@ export class User {
             password: data.password,
             phone: data.phone,
             createdAt: data.created_at,
-            updatedAt: data.updated_at
+            updatedAt: data.updated_at,
+            authToken: data.auth_token
         })
         return newUser;
     }
@@ -48,6 +52,7 @@ export class User {
             phone: data.phone,
             created_at: data.createdAt,
             updated_at: data.updatedAt,
+            auth_token: data.authToken
         }
     }
 }

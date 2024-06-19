@@ -9,12 +9,17 @@ export class UserController {
 
   @Get(':id')
   async getUserById(@Param('id') id: string): Promise<UserSchema> {
-    return this.userService.findOneById(id);
+    return this.userService.findById(id);
   }
 
   @Post('sign-up')
   async signUp(@Body() body:any):Promise<User> {
     return this.userService.signUp(body);
+  }
+
+  @Post('sign-in')
+  async (@Body() body:any):Promise<User> {
+    return this.userService.singIn(body);
   }
 
   @Post('find-all')
