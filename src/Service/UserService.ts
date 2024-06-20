@@ -1,32 +1,52 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSchema } from 'src/Models/User/UserSchema';
 import { Repository } from 'typeorm';
 import { User } from 'src/Models/User/UserEntity';
 import { HashPassword } from '../utils/HashPassword';
 import { JwtAuthService } from 'src/middleware/JwtAuthService';
+import { UserRepository } from 'src/Models/User/UserRepository';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserSchema)
-    private readonly userRepository: Repository<UserSchema>,
+    private readonly repositoryUser: Repository<UserSchema>,
+    private readonly userRepository: UserRepository,
     private readonly jwtAuthService: JwtAuthService,
   ) {}
 
-  async signUp(input: InputSignUp): Promise<any> {
-    const verifyUser = await this.findByEmail(input.email);
-    if(verifyUser)
-      throw new ConflictException('EMAIL ALREADS IN USE');
-    const newUser = new User(input);
-    const saveUser = User.toDatabase(newUser);
-    saveUser.password = await HashPassword.hashPassword(saveUser.password);
-    await this.userRepository.save(saveUser);
+  async signUp(input: InputSignUp): Promise<User> {
+    const verifyUser = await this.userRepository.findByEmail(input.email);
+    if (verifyUser) throw new ConflictException('EMAIL ALREADS IN USE');
+    const password = await HashPassword.hashPassword(input.password);
+    const newUser = new User({
+      email: input.email,
+      name: input.name,
+      password: password,
+      phone: input.phone
+    });
+    const token = await this.jwtAuthService.generateToken(newUser.id, newUser.email);
+    newUser.authToken= token;
+    const userToDatabase = User.toDatabase(newUser);
+    try {
+      await this.repositoryUser.save(userToDatabase);
+    } catch (error) {
+      throw new InternalServerErrorException('USER NOT SAVE');
+    }
     return newUser;
   }
 
-  async singIn(input: InputSignIn): Promise<User> {
-    const user = await this.findByEmail(input.email);
+  async signIn(input: InputSignIn): Promise<User> {
+    const user = await this.userRepository.findByEmail(input.email);
+    if(!user) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD')
     const passwordIsValid = await HashPassword.comparePassword(
       input.password,
       user.password,
@@ -38,74 +58,42 @@ export class UserService {
       user.id,
       user.email,
     );
-    await this.userRepository.query(`UPDATE users
+    await this.repositoryUser.query(`UPDATE users
       SET auth_token = '${user.authToken}'
       WHERE id = '${user.id}';
     `);
     return user;
   }
 
-  // find methods
-  async findById(id: string): Promise<User> {
-    const queryString = `SELECT * FROM users
-    WHERE id = '${id}'
-    `;
-    const user = await this.userRepository.query(queryString);
-    if (!user || !user.length) {
-      throw new NotFoundException('USER NOT FOUND');
+  async editUser(input: InputEditUser): Promise<any> {
+    const user = await this.userRepository.findById(input.decodedToken.userId);
+    if (!user) throw new NotFoundException('USER NOT FOUND');
+    if(!input.newPassword){
+      await this.userRepository.updateUser(input, input.decodedToken.userId);
+    } else {
+      if(!input.currentPassword) throw new BadRequestException('CURRENT PASSWORD IS NECESSARY');
+      const passwordIsValid = await HashPassword.comparePassword(input.currentPassword, user.password);
+      if(passwordIsValid==false) throw new UnauthorizedException('INVALID CURRENT PASSWORD'); 
+      const newPasswordHash = await HashPassword.hashPassword(input.newPassword); 
+      user.password=newPasswordHash;
+      await this.userRepository.updateUser(user, input.decodedToken.userId);  
     }
-    const userFormated = User.fromDatabase(user[0]);
-    return userFormated;
+    return { sucess: true };
   }
 
-  async findByEmail(email: string): Promise<User> {
-    const queryString = `SELECT * FROM users
-    WHERE email = '${email}'
-    `;
-    const user = await this.userRepository.query(queryString);
-    if (!user || !user.length) {
-      throw new NotFoundException(`USER NOT FOUND`);
-    }
-    const userFormated = User.fromDatabase(user[0]);
-    return userFormated;
-  }
-
-  async findAll(): Promise<User[]> {
-    const queryString = `SELECT * FROM users`;
-    const users = await this.userRepository.query(queryString);
-    const usersFormated: User[] = users.map((user) => User.fromDatabase(user));
-    return usersFormated;
-  }
-
-  async updateUser(userData: Partial<User>) {
-    const fields: string[] = [];
-
-    if (userData.name) {
-      fields.push(`name = '${userData.name}'`);
-    }
-
-    if (userData.password) {
-      fields.push(`password = '${userData.password}'`);
-    }
-
-    if (userData.phone) {
-      fields.push(`phone = '${userData.phone}'`);
-    }
-
-    if (fields.length === 0) {
-      throw new BadRequestException('NO FIELDS TO UPDATE');
-    }
-
-    const queryString = `
-        UPDATE users 
-        SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP
-        WHERE id = '${userData.id}'
-    `;
+  async deleteUser(input:InputSignIn){
+    const login = await this.signIn(input);
+    const queryString = `DELETE FROM users WHERE email = '${input.email}';`
     try {
-      await this.userRepository.query(queryString);
+    await this.repositoryUser.query(queryString);
+    return{ sucess: true }
     } catch (error) {
-      console.error('Error updating user:', error);
+      return {sucess: false, error: error}
     }
+  }
+
+  async findAll() {
+    return await this.userRepository.findAll();
   }
 }
 
@@ -113,9 +101,21 @@ type InputSignUp = {
   name: string;
   email: string;
   password: string;
+  phone?:string;
 };
 
 type InputSignIn = {
   email: string;
   password: string;
+};
+
+type InputEditUser = {
+  decodedToken: {
+    userId: string;
+    email: string;
+  };
+  name?: string;
+  phone?: string;
+  newPassword?: string;
+  currentPassword?:string;
 };
