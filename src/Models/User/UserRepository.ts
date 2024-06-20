@@ -30,7 +30,7 @@ export class UserRepository {
     }
   
     async findAll(): Promise<User[]> {
-      const queryString = `SELECT * FROM users`;
+      const queryString = `SELECT * FROM users `;
       const users:any[] = await this.userRepository.query(queryString);
       const usersFormated = users.map((user) => User.fromDatabase(user));
       return usersFormated;

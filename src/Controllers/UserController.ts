@@ -76,6 +76,5 @@ export class UserController {
         .status(HttpStatus.INTERNAL_SERVER_ERROR)
         .send({ error: err.message });
     }
-
   }
 }
