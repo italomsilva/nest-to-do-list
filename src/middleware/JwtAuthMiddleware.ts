@@ -13,7 +13,6 @@ export class JwtAuthMiddleware implements NestMiddleware {
     }
 
     let token: string;
-    // Se o token não estiver no formato esperado, usa o valor do cabeçalho como token
     if (authHeader.startsWith('Bearer ')) {
       token = authHeader.split(' ')[1];
     } else {
@@ -29,7 +28,10 @@ export class JwtAuthMiddleware implements NestMiddleware {
       if (!user) {
         throw new UnauthorizedException('Invalid token');
       }
-      req.user = user;
+      req.body.decodedToken = {
+        userId: user.userId,
+        email: user.email
+      };
       next();
     } catch (error) {
       throw new UnauthorizedException('Invalid token');

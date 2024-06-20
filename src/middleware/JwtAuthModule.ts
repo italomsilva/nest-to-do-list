@@ -16,7 +16,7 @@ import { JwtAuthMiddleware } from './JwtAuthMiddleware';
 })
 export class JwtAuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtAuthMiddleware).forRoutes('u/find-all');
+    consumer.apply(JwtAuthMiddleware).forRoutes('user/delete-user', 'user/edit-user');
   }
 }
 
