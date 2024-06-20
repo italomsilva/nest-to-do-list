@@ -9,6 +9,6 @@ import { JwtAuthModule } from 'src/middleware/JwtAuthModule';
 @Module({
   imports: [TypeOrmModule.forFeature([UserSchema]), JwtAuthModule],
   controllers: [UserController],
-  providers: [UserService, UserRepository], //n precisa u repo
+  providers: [UserService, UserRepository],
 })
 export class UserModule {}

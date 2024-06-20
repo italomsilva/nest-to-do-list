@@ -6,7 +6,7 @@ VALUES
   ('3', 'Michael Johnson', 'michael.johnson@example.com', 'senha789', '987654321', NOW(), NOW(), NULL);
 
 -- Inserir Task
-INSERT INTO tasks (id, name, description, duration, type, owner_user, created_at) VALUES
-('task_1', 'First Task', 'This is the first task', 120, 'Development', 'user1', CURRENT_TIMESTAMP),
-('task_2', 'Second Task', 'This is the second task', 90, 'Testing', 'user2', CURRENT_TIMESTAMP),
-('task_3', 'Third Task', 'This is the third task', 45, 'Documentation', 'user3', CURRENT_TIMESTAMP);
+INSERT INTO tasks (id, title, description, duration, type, owner_user, created_at) VALUES
+('task_1', 'First Task', 'This is the first task', 120, 'Development', '1', CURRENT_TIMESTAMP),
+('task_2', 'Second Task', 'This is the second task', 90, 'Testing', '1', CURRENT_TIMESTAMP),
+('task_3', 'Third Task', 'This is the third task', 45, 'Documentation', '2', CURRENT_TIMESTAMP);

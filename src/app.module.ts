@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './database/database';
 import { AuthKeyMiddleware } from './middleware/AuthKeyMiddleware';
 import { JwtAuthModule } from './middleware/JwtAuthModule';
+import { TaskModule } from './Models/Task/TaskModule';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -13,6 +14,7 @@ import { JwtAuthModule } from './middleware/JwtAuthModule';
     TypeOrmModule.forRoot(typeOrmConfig),
     JwtAuthModule,
     UserModule,
+    TaskModule
   ],
 })
 export class AppModule implements NestModule {

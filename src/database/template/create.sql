@@ -18,10 +18,10 @@ auth_token VARCHAR(255)
 -- Tabela tasks
 CREATE TABLE tasks (
     id VARCHAR(255) NOT NULL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
-    duration INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description VARCHAR(255),
+    duration INT,
     type VARCHAR(50) NOT NULL,
-    owner_user VARCHAR(255),
+    owner_user VARCHAR(255) NOT NULL,
     created_at TIMESTAMP
 );
