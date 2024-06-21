@@ -18,4 +18,10 @@ export class TaskController{
         const result = await this.taskService.createTask(body);
         return result;
     }
+
+    @Post('delete')
+    async deleteTask(@Body() body){
+        const result = await this.taskService.deleteTask(body);
+        return result;
+    }
 }

@@ -11,10 +11,17 @@ export class TaskRepository{
         private taskRepository: Repository<TaskSchema>
     ){}
 
-    async findAll(userId:string):Promise<Task[]>{
+    async findAllByUserId(userId:string):Promise<Task[]>{
         const queryString = `SELECT * FROM tasks WHERE owner_user = '${userId}'`
         const tasks = await this.taskRepository.query(queryString);
         const formatedTasks = tasks.map((task)=>Task.fromDatabase(task));
         return formatedTasks;
     }
+
+    async findById(taskId:string): Promise<Task>{
+        const queryString = `SELECT * FROM tasks WHERE id = '${taskId}'`;
+        const task = await this.taskRepository.query(queryString);
+        return Task.fromDatabase(task[0]);
+    }
+
 } 

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Task } from "src/Models/Task/TaskEntity";
 import { TaskRepository } from "src/Models/Task/TaskRepository";
@@ -14,7 +14,7 @@ export class TaskService {
     ){}
 
     async findAllUserTasks(input){
-        const result = await this.taskRepository.findAll(input.decodedToken.userId);
+        const result = await this.taskRepository.findAllByUserId(input.decodedToken.userId);
         return result;
     }
 
@@ -35,7 +35,25 @@ export class TaskService {
         } catch (error){
             throw new InternalServerErrorException(`TASK NOT SAVED \n ERROR: ${error}`)
         }
+    }
 
+    async deleteTask(input:InputDelete){
+        const task = await this.taskRepository.findById(input.taskId);
+        if(!task) throw new NotFoundException('TASK NOT FOUND');
+        if(task.ownerUser != input.decodedToken.userId) throw new UnauthorizedException();
+        try {
+            const queryString = `DELETE FROM tasks WHERE id = '${input.taskId}';`;
+            await this.repositoryTask.query(queryString)
+            
+        } catch (error) {
+            return {
+                sucess: false,
+                error: error
+            }
+        }
+        return {
+            sucess: true
+        }
     }
 }
 
@@ -47,4 +65,11 @@ type InputCreate = {
     description?: string;
     duration?: number;
     type?: string;  
+}
+
+type InputDelete = {
+    decodedToken:{
+        userId:string
+    };
+    taskId:string;
 }
