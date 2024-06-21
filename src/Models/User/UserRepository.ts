@@ -55,8 +55,7 @@ export class UserRepository {
         throw new BadRequestException('NO FIELDS TO UPDATE');
       }
   
-      const queryString = `
-          UPDATE users SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = '${userId}'`;
+      const queryString = `UPDATE users SET ${fields.join(', ')}, updated_at = CURRENT_TIMESTAMP WHERE id = '${userId}'`;
       try {
         await this.userRepository.query(queryString);
       } catch (error) {
