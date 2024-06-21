@@ -17,6 +17,7 @@ export class UserRepository {
       WHERE id = '${id}'
       `;
       const user = await this.userRepository.query(queryString);
+      if(!user.length) return undefined;
       const userFormated = User.fromDatabase(user[0]);
       return userFormated;
     }

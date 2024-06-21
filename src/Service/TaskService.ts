@@ -64,13 +64,25 @@ export class TaskService {
       sucess: true,
     };
   }
-  
+
   async editTask(input: InputEdit) {
     const task = await this.taskRepository.findById(input.taskId);
     if (!task) throw new NotFoundException('TASK NOT FOUNND');
     if (task.ownerUser != input.decodedToken.userId)
       throw new UnauthorizedException();
     return await this.taskRepository.updateTask(input);
+  }
+
+  async changeCompleted(input:InputDelete){
+    const task = await this.taskRepository.findById(input.taskId);
+    if(!task) throw new NotFoundException('TASK NOT FOUND');
+    try {
+        const queryString = `UPDATE tasks SET completed = ${(!task.completed)} WHERE id = '${input.taskId}'`;
+        await this.repositoryTask.query(queryString);
+    } catch (err) {
+        return err
+    }
+
   }
 }
 
