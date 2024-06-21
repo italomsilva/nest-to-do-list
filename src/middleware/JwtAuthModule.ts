@@ -1,4 +1,3 @@
-// auth.module.ts
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtAuthService } from './JwtAuthService';
@@ -21,7 +20,7 @@ export class JwtAuthModule implements NestModule {
       .forRoutes(
         'user/delete-user',
         'user/edit-user',
-        'task/find-all'
+        'task/'
       );
   }
 }

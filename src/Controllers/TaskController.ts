@@ -9,7 +9,13 @@ export class TaskController{
 
     @Post('find-all')
     async findAll(@Body() body){
-        const result = await this.taskService.findAll(body);
+        const result = await this.taskService.findAllUserTasks(body);
+        return result;
+    }
+
+    @Post('create')
+    async createTask(@Body() body){
+        const result = await this.taskService.createTask(body);
         return result;
     }
 }
