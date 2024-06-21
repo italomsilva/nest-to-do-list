@@ -80,9 +80,11 @@ export class UserService {
     return { sucess: true };
   }
 
-  async deleteUser(input:InputSignIn){
+  async deleteUser(input:InputDelete){
+    if(input.email != input.decodedToken.email) throw new UnauthorizedException('USER UNAUTHORIZED');
     const login = await this.signIn(input);
-    const queryString = `DELETE FROM users WHERE email = '${input.email}';`
+    if(!login) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD');
+    const queryString = `DELETE FROM users WHERE email = '${input.decodedToken.email}';`
     try {
     await this.repositoryUser.query(queryString);
     return{ sucess: true }
@@ -104,6 +106,15 @@ type InputSignUp = {
 };
 
 type InputSignIn = {
+  email: string;
+  password: string;
+};
+
+
+type InputDelete = {
+  decodedToken:{
+    email:string;
+  }
   email: string;
   password: string;
 };
