@@ -35,9 +35,8 @@ export class UserService {
     });
     const token = await this.jwtAuthService.generateToken(newUser.id, newUser.email);
     newUser.authToken= token;
-    const userToDatabase = User.toDatabase(newUser);
     try {
-      await this.repositoryUser.save(userToDatabase);
+      await this.repositoryUser.save(newUser);
     } catch (error) {
       throw new InternalServerErrorException('USER NOT SAVE');
     }

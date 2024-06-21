@@ -29,6 +29,6 @@ export class UserSchema {
   @Column({ type: 'varchar', length: 255, nullable: false })
   password: string;
 
-  @Column({ name: 'auth_token', length: 255, nullable: true })
+  @Column({ name: 'auth_token', type: 'varchar', length: 255, nullable: true })
   authToken: string;
 }
