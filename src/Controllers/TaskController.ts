@@ -30,4 +30,10 @@ export class TaskController{
         const result = await this.taskService.editTask(body);
         return result;
     }
+
+    @Post('toggle-completed')
+    async toggleCompleted(@Body() body){
+        const result = await this.taskService.changeCompleted(body);
+        return result;
+    }
 }

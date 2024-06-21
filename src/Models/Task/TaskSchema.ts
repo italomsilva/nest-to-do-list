@@ -22,4 +22,7 @@ export class TaskSchema {
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
+
+  @Column({type: 'boolean', nullable: false})
+  completed: boolean;
 }

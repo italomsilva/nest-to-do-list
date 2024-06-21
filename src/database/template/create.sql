@@ -23,5 +23,6 @@ CREATE TABLE tasks (
     duration INT,
     type VARCHAR(50) NOT NULL,
     owner_user VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP
+    created_at TIMESTAMP,
+    completed BOOLEAN NOT NULL
 );

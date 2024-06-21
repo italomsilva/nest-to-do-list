@@ -21,6 +21,7 @@ export class TaskRepository{
     async findById(taskId:string): Promise<Task>{
         const queryString = `SELECT * FROM tasks WHERE id = '${taskId}'`;
         const task = await this.taskRepository.query(queryString);
+        if(!task.length) return undefined;
         return Task.fromDatabase(task[0]);
     }
 

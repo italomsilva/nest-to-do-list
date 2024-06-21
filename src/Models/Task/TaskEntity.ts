@@ -8,6 +8,7 @@ export class Task {
   type: string;
   ownerUser: string;
   createdAt: Date;
+  completed:boolean;
 
   constructor(taskData: {
     id?: string;
@@ -17,6 +18,7 @@ export class Task {
     type?: string;
     ownerUser: string;
     createdAt?: Date;
+    completed?:boolean;
   }) {
     this.id = taskData.id ? taskData.id : UUID.randomUUID();
     this.title = taskData.title;
@@ -25,6 +27,7 @@ export class Task {
     this.type = taskData.type ? taskData.type : 'default';
     this.ownerUser = taskData.ownerUser;
     this.createdAt = taskData.createdAt ? taskData.createdAt : new Date();
+    this.completed= taskData.completed? taskData.completed : false;
   }
 
   static fromDatabase(taskData:any):Task{
@@ -36,6 +39,7 @@ export class Task {
         type: taskData.type,
         ownerUser: taskData.owner_user,
         createdAt: taskData.created_at,
+        completed: taskData.completed==0? false : true
     });
   }
 
@@ -48,6 +52,7 @@ export class Task {
         type: taskData.type,
         owner_user: taskData.ownerUser,
         created_at: taskData.createdAt,
+        completed: taskData.completed
     }
   }
 
