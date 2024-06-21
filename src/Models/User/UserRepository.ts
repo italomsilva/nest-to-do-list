@@ -21,7 +21,7 @@ export class UserRepository {
       return userFormated;
     }
   
-    async findByEmail(email: string): Promise<User | undefined> {
+    async findByEmail(email: string): Promise<User> {
       const queryString = `SELECT * FROM users WHERE email = '${email}'`;
       const user = await this.userRepository.query(queryString);
       if(!user.length) return undefined;
