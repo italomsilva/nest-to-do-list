@@ -24,4 +24,10 @@ export class TaskController{
         const result = await this.taskService.deleteTask(body);
         return result;
     }
+
+    @Post('edit')
+    async editTask(@Body() body){
+        const result = await this.taskService.editTask(body);
+        return result;
+    }
 }
