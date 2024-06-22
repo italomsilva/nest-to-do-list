@@ -37,10 +37,10 @@ export class UserService {
     newUser.authToken= token;
     try {
       await this.repositoryUser.save(newUser);
+      return newUser;
     } catch (error) {
       throw new InternalServerErrorException('USER NOT SAVE');
     }
-    return newUser;
   }
 
   async signIn(input: InputSignIn): Promise<User> {
