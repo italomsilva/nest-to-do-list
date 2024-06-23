@@ -1,14 +1,14 @@
-#API de Lista de Tarefas com NestJS ✨
+# API de Lista de Tarefas com NestJS ✨
 Esta é uma API desenvolvida com NestJS e TypeScript que implementa uma lista de tarefas (To-Do List) com autenticação JWT e chave de acesso.
 
-##Funcionalidades da API
+## Funcionalidades da API
 A API de Lista de Tarefas permite aos usuários gerenciar suas tarefas de forma eficiente e segura. As principais funcionalidades incluem:
 
  - CRUD de Tarefas: Permite criar, ler, atualizar e excluir tarefas.
  - Autenticação JWT: Protege as rotas da API utilizando JSON Web Tokens (JWT) para garantir que apenas usuários autenticados possam acessar e modificar dados.
  - Chave de Acesso: Requer uma chave de acesso específica para interagir com a API, aumentando a segurança.
  - Gestão de Usuários: Registra e autentica usuários, gerenciando sessões e permissões.
-##Tecnologias Utilizadas
+## Tecnologias Utilizadas
  - NestJS: Framework Node.js para construção de aplicações escaláveis e eficientes.
  - TypeScript: Linguagem de programação que adiciona tipos estáticos ao JavaScript.
  - MySQL: Banco de dados relacional para armazenar dados das tarefas e usuários.
