@@ -1,4 +1,4 @@
-# API de Lista de Tarefas com NestJS ✨
+# API de Lista de Tarefas com Nest e Typescript ✨
 Esta é uma API desenvolvida com NestJS e TypeScript que implementa uma lista de tarefas (To-Do List) com autenticação JWT e chave de acesso.
 
 ## Funcionalidades da API
@@ -7,7 +7,7 @@ A API de Lista de Tarefas permite aos usuários gerenciar suas tarefas de forma 
  - CRUD de Tarefas: Permite criar, ler, atualizar e excluir tarefas.
  - Autenticação JWT: Protege as rotas da API utilizando JSON Web Tokens (JWT) para garantir que apenas usuários autenticados possam acessar e modificar dados.
  - Chave de Acesso: Requer uma chave de acesso específica para interagir com a API, aumentando a segurança.
- - Gestão de Usuários: Registra e autentica usuários, gerenciando sessões e permissões.
+ - Gestão de Usuários: Registra, autentica, lista, edita e deleta um usuário.
 ## Tecnologias Utilizadas
  - NestJS: Framework Node.js para construção de aplicações escaláveis e eficientes.
  - TypeScript: Linguagem de programação que adiciona tipos estáticos ao JavaScript.
@@ -51,8 +51,9 @@ npm run start
  6. Acesse a API
  - A API estará disponível em http://localhost:3000.
 Utilize ferramentas como Postman ou Insomnia para interagir com a API.
+ - Em toda requisição adicione dois headers: um com o nome 'to-do-apikey' e valor 'v-apikey', e outro chamado 'auth-token' e adicione o valor do token que você receberá ao se registrar ou fazer login.
 
-## Endpoints-
+## Endpoints
  - POST /user/sign-up: Registra um novo usuário.
  - POST /user/sign-in: Autentica um usuário.
  - POST /user/edit-user: Edita um usuário.
