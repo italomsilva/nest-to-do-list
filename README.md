@@ -1,4 +1,77 @@
+# API de Lista de Tarefas com Nest e Typescript ✨
+Esta é uma API desenvolvida com NestJS e TypeScript que implementa uma lista de tarefas (To-Do List) com autenticação JWT e chave de acesso.
+
+## Funcionalidades da API
+A API de Lista de Tarefas permite aos usuários gerenciar suas tarefas de forma eficiente e segura. As principais funcionalidades incluem:
+
+ - CRUD de Tarefas: Permite criar, ler, atualizar e excluir tarefas.
+ - Autenticação JWT: Protege as rotas da API utilizando JSON Web Tokens (JWT) para garantir que apenas usuários autenticados possam acessar e modificar dados.
+ - Chave de Acesso: Requer uma chave de acesso específica para interagir com a API, aumentando a segurança.
+ - Gestão de Usuários: Registra, autentica, lista, edita e deleta um usuário.
+## Tecnologias Utilizadas
+ - NestJS: Framework Node.js para construção de aplicações escaláveis e eficientes.
+ - TypeScript: Linguagem de programação que adiciona tipos estáticos ao JavaScript.
+ - MySQL: Banco de dados relacional para armazenar dados das tarefas e usuários.
+ - JWT: Para autenticação segura via tokens.
+
+## Regras de Uso
+Para usar a API de Lista de Tarefas, siga os passos abaixo:
+
+ 1. Clone este repositório:
+
+```bash
+git clone https://github.com/italomsilva/nest-to-do-list.git
+```
+2. Instale as dependências:
+
+```bash
+cd nest-to-do-list
+npm install
+```
+3. Configure as variáveis de ambiente:
+ - Crie um arquivo .env na raiz do projeto
+ - Adicione as variáveis
+```bash
+APP_PORT= 3000 #(Fica a sua escolha)
+DB_HOST= localhost #(seu host)
+DB_PORT=3306 #(porta padrão)
+DB_USER=root #(seu usuário)
+DB_PASSWORD= 123456 #(sua senha)
+DB_NAME=testtodo
+APIKEY_VALUE=v-apikey
+JWT_SECRET=SECURITY=SECURITY #(Fica a sua escolha)
+```
+4. Crie o banco de dados
+ - Execute o arquivo src/database/template/create.sql para criar as tabelas necessárias
+
+5. Inicie a aplicação:
+```bash
+npm run start
+```
+ 6. Acesse a API
+ - A API estará disponível em http://localhost:3000.
+Utilize ferramentas como Postman ou Insomnia para interagir com a API.
+ - Em toda requisição adicione dois headers: um com o nome 'to-do-apikey' e valor 'v-apikey', e outro chamado 'auth-token' e adicione o valor do token que você receberá ao se registrar ou fazer login.
+
+## Endpoints
+ - POST /user/sign-up: Registra um novo usuário.
+ - POST /user/sign-in: Autentica um usuário.
+ - POST /user/edit-user: Edita um usuário.
+ - POST /user/delete-user: Deleta um usuário.
+ - POST /user/find-all: Retorna uma lista de todos os usuários.
+ - POST /task/create: Cria uma tarefa.
+ - POST /task/edit: Edita uma tarefa.
+ - POST /task/delete: Deleta uma tarefa.
+ - POST /task/find-all: Retorna uma lista de todas as tarefas de um usuário.
+ - POST /task/toggle-completed: Altera o estado dde uma tarefa entre completa ou não.
+## Licença
+Este projeto está licenciado sob a Licença MIT.
+
+
+
+
 <p align="center">
+ <h1>Nest</h1>
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
 
