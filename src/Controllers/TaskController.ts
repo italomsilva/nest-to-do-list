@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Patch, Post, Put } from "@nestjs/common";
 import { TaskService } from "src/Service/TaskService";
 
 @Controller('task')
@@ -7,7 +7,7 @@ export class TaskController{
         private readonly taskService:TaskService
     ){}
 
-    @Post('find-all')
+    @Get('find-all')
     async findAll(@Body() body){
         const result = await this.taskService.findAllUserTasks(body);
         return result;
@@ -19,19 +19,19 @@ export class TaskController{
         return result;
     }
 
-    @Post('delete')
+    @Delete('delete')
     async deleteTask(@Body() body){
         const result = await this.taskService.deleteTask(body);
         return result;
     }
 
-    @Post('edit')
+    @Put('edit')
     async editTask(@Body() body){
         const result = await this.taskService.editTask(body);
         return result;
     }
 
-    @Post('toggle-completed')
+    @Patch('toggle-completed')
     async toggleCompleted(@Body() body){
         const result = await this.taskService.changeCompleted(body);
         return result;

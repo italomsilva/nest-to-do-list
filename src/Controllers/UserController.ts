@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Post, Put, Req, Res } from '@nestjs/common';
 import { UserService } from '../Service/UserService';
 import { Response } from 'express';
 
@@ -36,7 +36,7 @@ export class UserController {
     }
   }
 
-  @Post('find-all')
+  @Get('find-all')
   async findAll(@Res() response: Response): Promise<Response> {
     try {
       const output = await this.userService.findAll();
@@ -48,7 +48,7 @@ export class UserController {
     }
   }
 
-  @Post('edit-user')
+  @Put('edit-user')
   async editUser(
     @Body() body: any,
     @Res() response: Response,
@@ -63,7 +63,7 @@ export class UserController {
     }
   }
 
-  @Post('delete-user')
+  @Delete('delete-user')
   async deleteUser(
     @Body() body: any,
     @Res() response: Response,
