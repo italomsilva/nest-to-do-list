@@ -79,8 +79,14 @@ export class TaskService {
     try {
         const queryString = `UPDATE tasks SET completed = ${(!task.completed)} WHERE id = '${input.taskId}'`;
         await this.repositoryTask.query(queryString);
+        return {
+          sucess: true
+        };
     } catch (err) {
-        return err
+        return {
+          sucess:false,
+          error: err
+        }
     }
 
   }
