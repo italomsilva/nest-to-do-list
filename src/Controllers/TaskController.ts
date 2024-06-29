@@ -19,21 +19,21 @@ export class TaskController{
         return result;
     }
 
-    @Delete('delete')
-    async deleteTask(@Body() body){
-        const result = await this.taskService.deleteTask(body);
-        return result;
-    }
-
     @Put('edit')
     async editTask(@Body() body){
         const result = await this.taskService.editTask(body);
         return result;
     }
-
+    
     @Patch('toggle-completed')
     async toggleCompleted(@Body() body){
         const result = await this.taskService.changeCompleted(body);
+        return result;
+    }
+    
+    @Delete('delete')
+    async deleteTask(@Body() body){
+        const result = await this.taskService.deleteTask(body);
         return result;
     }
 }
