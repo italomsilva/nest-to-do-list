@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserSchema } from 'src/Models/User/UserSchema';
+import { User } from 'src/Models/User/UserEntity';
 import { Repository } from 'typeorm';
 import { HashPassword } from '../utils/HashPassword';
 import { JwtAuthService } from 'src/middleware/JwtAuthService';
@@ -16,12 +16,12 @@ import { DecodedToken } from 'src/middleware/TokenInterface';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserSchema)
-    private readonly repositoryUser: Repository<UserSchema>,
+    @InjectRepository(User)
+    private readonly repositoryUser: Repository<User>,
     private readonly jwtAuthService: JwtAuthService,
   ) {}
 
-  async signUp(input: InputSignUp): Promise<UserSchema> {
+  async signUp(input: InputSignUp): Promise<User> {
     const verifyUser = await this.repositoryUser.findOneBy({
       email: input.email,
     });
@@ -46,7 +46,7 @@ export class UserService {
     }
   }
 
-  async signIn(input: InputSignIn): Promise<UserSchema> {
+  async signIn(input: InputSignIn): Promise<User> {
     const user = await this.repositoryUser.findOneBy({ email: input.email });
     if (!user) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD');
     const passwordIsValid = await HashPassword.comparePassword(

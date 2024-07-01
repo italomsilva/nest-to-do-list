@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { UserSchema } from "src/Models/User/UserSchema";
+import { Task } from "src/Models/Task/TaskEntity";
+import { User } from "src/Models/User/UserEntity";
 
 export const typeOrmConfig:TypeOrmModuleOptions= {
     type: 'mysql',
@@ -8,7 +9,7 @@ export const typeOrmConfig:TypeOrmModuleOptions= {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: [UserSchema],
+    entities: [User, Task],
     autoLoadEntities: true,
     synchronize: true,
   }
