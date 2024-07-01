@@ -6,54 +6,91 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DecodedToken } from 'src/middleware/TokenInterface';
 import { Task } from 'src/Models/Task/TaskEntity';
-import { TaskRepository } from 'src/Models/Task/TaskRepository';
-import { TaskSchema } from 'src/Models/Task/TaskSchema';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class TaskService {
   constructor(
-    @InjectRepository(TaskSchema)
-    private readonly repositoryTask: Repository<TaskSchema>,
-    private readonly taskRepository: TaskRepository,
+    @InjectRepository(Task)
+    private readonly repositoryTask: Repository<Task>,
   ) {}
 
-  async findAllUserTasks(input) {
-    const result = await this.taskRepository.findAllByUserId(
-      input.decodedToken.userId,
-    );
+  async findAllUserTasks(input: {
+    decodedToken: DecodedToken;
+  }): Promise<Task[]> {
+    const result = await this.repositoryTask.findBy({
+      ownerUser: input.decodedToken.userId,
+    });
     return result;
   }
 
   async createTask(input: InputCreate): Promise<Task> {
     if (input.type == 'routine' || input.type == 'regular') {
       if (!input.duration)
-        throw new BadRequestException(`DURATION IS REQUIRED FOR "${input.type}" TASKS`);
+        throw new BadRequestException(
+          `DURATION IS REQUIRED FOR "${input.type}" TASKS`,
+        );
     }
-    const newTask = new Task({
+    const newTask = this.repositoryTask.create({
       title: input.title,
       description: input.description ? input.description : null,
       duration: input.duration ? input.duration : null,
       type: input.type ? input.type : 'default',
       ownerUser: input.decodedToken.userId ? input.decodedToken.userId : '1',
+      completed: false,
     });
     try {
       await this.repositoryTask.save(newTask);
       return newTask;
     } catch (error) {
-      throw new InternalServerErrorException(`TASK NOT SAVED \n ERROR: ${error}`);
+      throw new InternalServerErrorException(
+        `TASK NOT SAVED \n ERROR: ${error}`,
+      );
+    }
+  }
+
+  async editTask(input: InputEdit) {
+    const task = await this.repositoryTask.findOneBy({ id: input.taskId });
+    if (!task) throw new NotFoundException('TASK NOT FOUNND');
+    if (task.ownerUser != input.decodedToken.userId)
+      throw new UnauthorizedException();
+    if (input.title) task.title = input.title;
+    if (input.description) task.description = input.description;
+    if (input.duration) task.duration = input.duration;
+    if (input.type) task.type = input.type;
+    return await this.repositoryTask.save(task); // testar passando input
+  }
+
+  async changeCompleted(input: InputDelete) {
+    const task = await this.repositoryTask.findOneBy({ id: input.taskId });
+    if (!task) throw new NotFoundException('TASK NOT FOUND');
+    if (input.decodedToken.userId != task.ownerUser)
+      throw new UnauthorizedException('UNAUTHORIZED USER');
+    try {
+      await this.repositoryTask.update(
+        { id: input.taskId },
+        { completed: !task.completed },
+      );
+      return {
+        sucess: true,
+      };
+    } catch (err) {
+      return {
+        sucess: false,
+        error: err,
+      };
     }
   }
 
   async deleteTask(input: InputDelete) {
-    const task = await this.taskRepository.findById(input.taskId);
+    const task = await this.repositoryTask.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUND');
     if (task.ownerUser != input.decodedToken.userId)
       throw new UnauthorizedException();
     try {
-      const queryString = `DELETE FROM tasks WHERE id = '${input.taskId}';`;
-      await this.repositoryTask.query(queryString);
+      await this.repositoryTask.delete({ id: input.taskId });
     } catch (error) {
       return {
         sucess: false,
@@ -64,38 +101,10 @@ export class TaskService {
       sucess: true,
     };
   }
-
-  async editTask(input: InputEdit) {
-    const task = await this.taskRepository.findById(input.taskId);
-    if (!task) throw new NotFoundException('TASK NOT FOUNND');
-    if (task.ownerUser != input.decodedToken.userId)
-      throw new UnauthorizedException();
-    return await this.taskRepository.updateTask(input);
-  }
-
-  async changeCompleted(input:InputDelete){
-    const task = await this.taskRepository.findById(input.taskId);
-    if(!task) throw new NotFoundException('TASK NOT FOUND');
-    try {
-        const queryString = `UPDATE tasks SET completed = ${(!task.completed)} WHERE id = '${input.taskId}'`;
-        await this.repositoryTask.query(queryString);
-        return {
-          sucess: true
-        };
-    } catch (err) {
-        return {
-          sucess:false,
-          error: err
-        }
-    }
-
-  }
 }
 
 type InputCreate = {
-  decodedToken: {
-    userId: string;
-  };
+  decodedToken: DecodedToken;
   title: string;
   description?: string;
   duration?: number;
@@ -103,16 +112,12 @@ type InputCreate = {
 };
 
 type InputDelete = {
-  decodedToken: {
-    userId: string;
-  };
+  decodedToken: DecodedToken;
   taskId: string;
 };
 
 type InputEdit = {
-  decodedToken: {
-    userId: string;
-  };
+  decodedToken: DecodedToken;
   taskId: string;
   title?: string;
   description?: string;
