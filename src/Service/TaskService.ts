@@ -14,13 +14,13 @@ import { Repository } from 'typeorm';
 export class TaskService {
   constructor(
     @InjectRepository(Task)
-    private readonly repositoryTask: Repository<Task>,
+    private readonly taskRepository: Repository<Task>,
   ) {}
 
   async findAllUserTasks(input: {
     decodedToken: DecodedToken;
   }): Promise<Task[]> {
-    const result = await this.repositoryTask.findBy({
+    const result = await this.taskRepository.findBy({
       ownerUser: input.decodedToken.userId,
     });
     return result;
@@ -33,7 +33,7 @@ export class TaskService {
           `DURATION IS REQUIRED FOR "${input.type}" TASKS`,
         );
     }
-    const newTask = this.repositoryTask.create({
+    const newTask = this.taskRepository.create({
       title: input.title,
       description: input.description ? input.description : null,
       duration: input.duration ? input.duration : null,
@@ -42,7 +42,7 @@ export class TaskService {
       completed: false,
     });
     try {
-      await this.repositoryTask.save(newTask);
+      await this.taskRepository.save(newTask);
       return newTask;
     } catch (error) {
       throw new InternalServerErrorException(
@@ -52,7 +52,7 @@ export class TaskService {
   }
 
   async editTask(input: InputEdit) {
-    const task = await this.repositoryTask.findOneBy({ id: input.taskId });
+    const task = await this.taskRepository.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUNND');
     if (task.ownerUser != input.decodedToken.userId)
       throw new UnauthorizedException();
@@ -60,16 +60,16 @@ export class TaskService {
     if (input.description) task.description = input.description;
     if (input.duration) task.duration = input.duration;
     if (input.type) task.type = input.type;
-    return await this.repositoryTask.save(task); // testar passando input
+    return await this.taskRepository.save(task); // testar passando input
   }
 
   async changeCompleted(input: InputDelete) {
-    const task = await this.repositoryTask.findOneBy({ id: input.taskId });
+    const task = await this.taskRepository.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUND');
     if (input.decodedToken.userId != task.ownerUser)
       throw new UnauthorizedException('UNAUTHORIZED USER');
     try {
-      await this.repositoryTask.update(
+      await this.taskRepository.update(
         { id: input.taskId },
         { completed: !task.completed },
       );
@@ -85,12 +85,12 @@ export class TaskService {
   }
 
   async deleteTask(input: InputDelete) {
-    const task = await this.repositoryTask.findOneBy({ id: input.taskId });
+    const task = await this.taskRepository.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUND');
     if (task.ownerUser != input.decodedToken.userId)
       throw new UnauthorizedException();
     try {
-      await this.repositoryTask.delete({ id: input.taskId });
+      await this.taskRepository.delete({ id: input.taskId });
     } catch (error) {
       return {
         sucess: false,
