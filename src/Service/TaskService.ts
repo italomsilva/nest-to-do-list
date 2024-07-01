@@ -60,7 +60,7 @@ export class TaskService {
     if (input.description) task.description = input.description;
     if (input.duration) task.duration = input.duration;
     if (input.type) task.type = input.type;
-    return await this.taskRepository.save(task); // testar passando input
+    return await this.taskRepository.save(task);
   }
 
   async changeCompleted(input: InputDelete) {
