@@ -9,32 +9,35 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSchema } from 'src/Models/User/UserSchema';
 import { Repository } from 'typeorm';
-import { User } from 'src/Models/User/UserEntity';
 import { HashPassword } from '../utils/HashPassword';
 import { JwtAuthService } from 'src/middleware/JwtAuthService';
-import { UserRepository } from 'src/Models/User/UserRepository';
+import { DecodedToken } from 'src/middleware/TokenInterface';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserSchema)
     private readonly repositoryUser: Repository<UserSchema>,
-    private readonly userRepository: UserRepository,
     private readonly jwtAuthService: JwtAuthService,
   ) {}
 
-  async signUp(input: InputSignUp): Promise<User> {
-    const verifyUser = await this.userRepository.findByEmail(input.email);
+  async signUp(input: InputSignUp): Promise<UserSchema> {
+    const verifyUser = await this.repositoryUser.findOneBy({
+      email: input.email,
+    });
     if (verifyUser) throw new ConflictException('EMAIL ALREADS IN USE');
     const password = await HashPassword.hashPassword(input.password);
-    const newUser = new User({
+    const newUser = this.repositoryUser.create({
       email: input.email,
       name: input.name,
       password: password,
-      phone: input.phone
+      phone: input.phone ? input.phone : null,
     });
-    const token = await this.jwtAuthService.generateToken(newUser.id, newUser.email);
-    newUser.authToken= token;
+    const token = await this.jwtAuthService.generateToken(
+      newUser.id,
+      newUser.email,
+    );
+    newUser.authToken = token;
     try {
       await this.repositoryUser.save(newUser);
       return newUser;
@@ -43,9 +46,9 @@ export class UserService {
     }
   }
 
-  async signIn(input: InputSignIn): Promise<User> {
-    const user = await this.userRepository.findByEmail(input.email);
-    if(!user) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD')
+  async signIn(input: InputSignIn): Promise<UserSchema> {
+    const user = await this.repositoryUser.findOneBy({ email: input.email });
+    if (!user) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD');
     const passwordIsValid = await HashPassword.comparePassword(
       input.password,
       user.password,
@@ -57,44 +60,58 @@ export class UserService {
       user.id,
       user.email,
     );
-    await this.repositoryUser.query(`UPDATE users
-      SET auth_token = '${user.authToken}'
-      WHERE id = '${user.id}';
-    `);
+    try {
+      await this.repositoryUser.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException('LOGIN FAILED');
+    }
     return user;
   }
 
   async editUser(input: InputEditUser): Promise<any> {
-    const user = await this.userRepository.findById(input.decodedToken.userId);
+    const user = await this.repositoryUser.findOneBy({
+      id: input.decodedToken.userId,
+    });
     if (!user) throw new NotFoundException('USER NOT FOUND');
-    if(!input.newPassword){
-      await this.userRepository.updateUser(input, input.decodedToken.userId);
-    } else {
-      if(!input.currentPassword) throw new BadRequestException('CURRENT PASSWORD IS NECESSARY');
-      const passwordIsValid = await HashPassword.comparePassword(input.currentPassword, user.password);
-      if(passwordIsValid==false) throw new UnauthorizedException('INVALID CURRENT PASSWORD'); 
-      const newPasswordHash = await HashPassword.hashPassword(input.newPassword); 
-      user.password=newPasswordHash;
-      await this.userRepository.updateUser(user, input.decodedToken.userId);  
+    if (input.name) user.name = input.name;
+    if (input.phone) user.phone = input.phone;
+    if (input.newPassword) {
+      if (!input.currentPassword)
+        throw new BadRequestException('CURRENT PASSWORD IS NECESSARY');
+      const passwordIsValid = await HashPassword.comparePassword(
+        input.currentPassword,
+        user.password,
+      );
+      if (passwordIsValid == false)
+        throw new UnauthorizedException('INVALID CURRENT PASSWORD');
+      const newPasswordHash = await HashPassword.hashPassword(
+        input.newPassword,
+      );
+      user.password = newPasswordHash;
+    }
+    try {
+      await this.repositoryUser.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException('EDIT USER FAILED');
     }
     return { sucess: true };
   }
 
-  async deleteUser(input:InputDelete){
-    if(input.email != input.decodedToken.email) throw new UnauthorizedException('USER UNAUTHORIZED');
+  async deleteUser(input: InputDelete) {
+    if (input.email != input.decodedToken.email)
+      throw new UnauthorizedException('USER UNAUTHORIZED');
     const login = await this.signIn(input);
-    if(!login) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD');
-    const queryString = `DELETE FROM users WHERE email = '${input.decodedToken.email}';`
+    if (!login) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD');
     try {
-    await this.repositoryUser.query(queryString);
-    return{ sucess: true }
+      await this.repositoryUser.delete({ email: input.email });
+      return { sucess: true };
     } catch (error) {
-      return {sucess: false, error: error}
+      throw new InternalServerErrorException('DELETE USER FAILED');
     }
   }
 
   async findAll() {
-    return await this.userRepository.findAll();
+    return await this.repositoryUser.find();
   }
 }
 
@@ -102,7 +119,7 @@ type InputSignUp = {
   name: string;
   email: string;
   password: string;
-  phone?:string;
+  phone?: string;
 };
 
 type InputSignIn = {
@@ -110,22 +127,16 @@ type InputSignIn = {
   password: string;
 };
 
-
 type InputDelete = {
-  decodedToken:{
-    email:string;
-  }
+  decodedToken: DecodedToken;
   email: string;
   password: string;
 };
 
 type InputEditUser = {
-  decodedToken: {
-    userId: string;
-    email: string;
-  };
+  decodedToken: DecodedToken;
   name?: string;
   phone?: string;
   newPassword?: string;
-  currentPassword?:string;
+  currentPassword?: string;
 };

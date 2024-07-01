@@ -1,14 +1,14 @@
 import {
   Entity,
-  PrimaryColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class UserSchema {
-  @PrimaryColumn({ type: 'varchar', length: 255 })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
