@@ -1,6 +1,7 @@
 import { OpenAPIObject } from '@nestjs/swagger';
 import { security, securitySchema } from './files/Security';
 import { userRequest, userSchema } from './files/User';
+import { taskRequest, taskSchema } from './files/Task';
 
 const swaggerDocument: OpenAPIObject = {
   openapi: '3.0.0',
@@ -18,10 +19,12 @@ const swaggerDocument: OpenAPIObject = {
   security,
   paths: {
     ...userRequest,
+    ...taskRequest
   },
   components: {
     schemas: {
       ...userSchema,
+      ...taskSchema
     },
     securitySchemes: securitySchema,
   },
