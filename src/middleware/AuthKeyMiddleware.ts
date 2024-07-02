@@ -7,7 +7,7 @@ export class AuthKeyMiddleware implements NestMiddleware {
     const apikey = req.headers['to-do-apikey'];
 
     if (apikey !== process.env.APIKEY_VALUE) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized Api Key' });
     }
     next();
   }
