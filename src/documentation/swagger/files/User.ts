@@ -1,4 +1,20 @@
-export const requestUser = {
+export const userRequest = {
+  '/user/find-all': {
+    get: {
+      summary: 'Listar Usuários',
+      description:
+        'Recurso que retorna uma lista de todos os usuários cadastrados no sistema.',
+      tags: ['User'],
+      responses: {
+        200: {
+          description: 'Successful operation',
+        },
+        500: {
+          description: 'Internal server error',
+        },
+      },
+    },
+  },
   '/user/sign-up': {
     post: {
       summary: 'Cadastrar usuário',
@@ -92,7 +108,8 @@ export const requestUser = {
   '/user/delete-user': {
     delete: {
       summary: 'Deletar Usuário',
-      description: 'Recurso que permite ao usuário deletar seu cadastro no sistema.',
+      description:
+        'Recurso que permite deletar o cadastro no sistema.',
       tags: ['User'],
       requestBody: {
         required: true,
@@ -117,11 +134,9 @@ export const requestUser = {
       },
     },
   },
-
-
 };
 
-export const userSchemes = {
+export const userSchema = {
   signUpRequest: {
     type: 'object',
     properties: {
@@ -137,9 +152,9 @@ export const userSchemes = {
         type: 'string',
         example: 'minhasenha123',
       },
-      phone:{
+      phone: {
         type: 'string',
-        example: '85987654321'
+        example: '85987654321',
       },
     },
     required: ['name', 'email', 'password'],
@@ -165,18 +180,18 @@ export const userSchemes = {
         type: 'string',
         example: 'Julio Cesar da Silva',
       },
-      phone:{
+      phone: {
         type: 'string',
-        example: '85912345678'
+        example: '85912345678',
       },
       newPassword: {
         type: 'string',
         example: 'minhanovasenha123',
       },
-      currentPassword:{
-        type:'string',
-        example:'minhasenhaatual123'
-      }
+      currentPassword: {
+        type: 'string',
+        example: 'minhasenhaatual123',
+      },
     },
   },
   deleteUserRequest: {
@@ -193,7 +208,4 @@ export const userSchemes = {
     },
     required: ['email', 'password'],
   },
-
-
-
 };

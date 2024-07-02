@@ -1,12 +1,12 @@
 import { OpenAPIObject } from '@nestjs/swagger';
 import { security, securitySchema } from './files/Security';
-import { requestUser, userSchemes } from './files/User';
+import { userRequest, userSchema } from './files/User';
 
 const swaggerDocument: OpenAPIObject = {
   openapi: '3.0.0',
   info: {
     title: 'Sistema de Lista de tarefas',
-    description: 'Este documento fornece uma visão detalhada do sistema de Lista de Tarefas, focando nas requisições e no conteúdo necessário para o corpo das solicitações. A aplicação de Lista de Tarefas permite aos usuários criar, visualizar, atualizar e excluir tarefas de maneira eficiente. A documentação a seguir especifica os endpoints disponíveis, os métodos HTTP suportados e os formatos de dados esperados no corpo das requisições. Além disso, detalha a necessidade de uma chave de acesso e de um token JWT para autenticação, garantindo que os usuários possam interagir com a API de forma correta e segura.',
+    description: 'A documentação a seguir especifica os endpoints disponíveis, os métodos HTTP suportados e os formatos de dados esperados no corpo das requisições. Para a completa utilização do sistema, são necessários dois cabeçalhos: uma chave de autorização, que deve ser enviada em todas as requisições, e um token JWT, necessário nas rotas que requerem autenticação do usuário. Essas medidas garantem que os usuários possam interagir com a API de forma correta e segura.',
     version: '1.0.0',
   },
   servers: [
@@ -17,11 +17,11 @@ const swaggerDocument: OpenAPIObject = {
   ],
   security,
   paths: {
-    ...requestUser,
+    ...userRequest,
   },
   components: {
     schemas: {
-      ...userSchemes,
+      ...userSchema,
     },
     securitySchemes: securitySchema,
   },
