@@ -14,6 +14,9 @@ export const taskRequest = {
         200: {
           description: 'Successful operation', //todo: olhar se retorna create
         },
+        400: {
+          description: 'Bad Request',
+        },
         500: {
           description: 'Internal server error',
         },
@@ -67,6 +70,9 @@ export const taskRequest = {
         200: {
           description: 'Successful operation',
         },
+        400: {
+          description: 'Bad Request',
+        },
         401: {
           description: 'Unauthorized',
         },
@@ -99,6 +105,9 @@ export const taskRequest = {
         200: {
           description: 'Successful operation',
         },
+        400: {
+          description: 'Bad Request',
+        },
         401: {
           description: 'Unauthorized',
         },
@@ -129,6 +138,9 @@ export const taskRequest = {
       responses: {
         200: {
           description: 'Successful operation',
+        },
+        400: {
+          description: 'Bad Request',
         },
         401: {
           description: 'Unauthorized',

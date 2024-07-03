@@ -34,6 +34,9 @@ export const userRequest = {
         201: {
           description: 'Successful operation',
         },
+        400: {
+          description: 'Bad Request',
+        },
         409: {
           description: 'Email already in use',
         },
@@ -61,6 +64,9 @@ export const userRequest = {
       responses: {
         200: {
           description: 'Successful operation',
+        },
+        400: {
+          description: 'Bad Request',
         },
         401: {
           description: 'Unauthorized',
@@ -124,6 +130,9 @@ export const userRequest = {
       responses: {
         200: {
           description: 'Successful operation',
+        },
+        400: {
+          description: 'Bad Request',
         },
         401: {
           description: 'Unauthorized',
