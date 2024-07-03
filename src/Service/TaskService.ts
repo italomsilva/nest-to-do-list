@@ -8,6 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { DecodedToken } from 'src/middleware/TokenInterface';
 import { Task } from 'src/Models/Task/TaskEntity';
+import { validateSchema } from 'src/Models/Task/TaskValidateSchema';
+import { Validator } from 'src/utils/Validator';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -20,6 +22,7 @@ export class TaskService {
   async findAllUserTasks(input: {
     decodedToken: DecodedToken;
   }): Promise<Task[]> {
+    Validator.validateInput(input, validateSchema.findAll);
     const result = await this.taskRepository.findBy({
       ownerUser: input.decodedToken.userId,
     });
@@ -27,6 +30,7 @@ export class TaskService {
   }
 
   async createTask(input: InputCreate): Promise<Task> {
+    Validator.validateInput(input, validateSchema.create);
     if (input.type == 'routine' || input.type == 'regular') {
       if (!input.duration)
         throw new BadRequestException(
@@ -52,6 +56,7 @@ export class TaskService {
   }
 
   async editTask(input: InputEdit) {
+    Validator.validateInput(input, validateSchema.edit);
     const task = await this.taskRepository.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUNND');
     if (task.ownerUser != input.decodedToken.userId)
@@ -64,6 +69,7 @@ export class TaskService {
   }
 
   async changeCompleted(input: InputDelete) {
+    Validator.validateInput(input, validateSchema.changeCompleted);
     const task = await this.taskRepository.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUND');
     if (input.decodedToken.userId != task.ownerUser)
@@ -85,6 +91,7 @@ export class TaskService {
   }
 
   async deleteTask(input: InputDelete) {
+    Validator.validateInput(input, validateSchema.delete);
     const task = await this.taskRepository.findOneBy({ id: input.taskId });
     if (!task) throw new NotFoundException('TASK NOT FOUND');
     if (task.ownerUser != input.decodedToken.userId)
