@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DecodedToken } from 'src/middleware/TokenInterface';
-import { Task } from 'src/Models/Task/TaskEntity';
-import { validateSchema } from 'src/Models/Task/TaskValidateSchema';
+import { Task } from 'src/models/task/TaskEntity';
+import { validateSchema } from 'src/models/task/TaskValidateSchema';
 import { Validator } from 'src/utils/Validator';
 import { Repository } from 'typeorm';
 

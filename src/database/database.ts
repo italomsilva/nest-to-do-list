@@ -1,6 +1,6 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { Task } from "src/Models/Task/TaskEntity";
-import { User } from "src/Models/User/UserEntity";
+import { Task } from "src/models/task/TaskEntity";
+import { User } from "src/models/user/UserEntity";
 
 export const typeOrmConfig:TypeOrmModuleOptions= {
     type: 'mysql',

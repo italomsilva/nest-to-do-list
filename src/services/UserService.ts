@@ -7,11 +7,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/Models/User/UserEntity';
+import { User } from 'src/models/user/UserEntity';
 import { Repository } from 'typeorm';
 import { HashPassword } from '../utils/HashPassword';
 import { JwtAuthService } from 'src/middleware/JwtAuthService';
 import { DecodedToken } from 'src/middleware/TokenInterface';
+import { Validator } from 'src/utils/Validator';
+import { validateSchema } from 'src/models/user/UserValidateSchema';
 
 @Injectable()
 export class UserService {
@@ -21,7 +23,12 @@ export class UserService {
     private readonly jwtAuthService: JwtAuthService,
   ) {}
 
+  async findAll() {
+    return await this.repositoryUser.find();
+  }
+
   async signUp(input: InputSignUp): Promise<User> {
+    Validator.validateInput(input, validateSchema.signUp);
     const verifyUser = await this.repositoryUser.findOneBy({
       email: input.email,
     });
@@ -47,6 +54,7 @@ export class UserService {
   }
 
   async signIn(input: InputSignIn): Promise<User> {
+    Validator.validateInput(input, validateSchema.signIn);
     const user = await this.repositoryUser.findOneBy({ email: input.email });
     if (!user) throw new UnauthorizedException('INVALID EMAIL OR PASSWORD');
     const passwordIsValid = await HashPassword.comparePassword(
@@ -69,6 +77,7 @@ export class UserService {
   }
 
   async editUser(input: InputEditUser): Promise<any> {
+    Validator.validateInput(input, validateSchema.edit);
     const user = await this.repositoryUser.findOneBy({
       id: input.decodedToken.userId,
     });
@@ -98,6 +107,7 @@ export class UserService {
   }
 
   async deleteUser(input: InputDelete) {
+    Validator.validateInput(input, validateSchema.delete);
     if (input.email != input.decodedToken.email)
       throw new UnauthorizedException('USER UNAUTHORIZED');
     const login = await this.signIn(input);
@@ -108,10 +118,6 @@ export class UserService {
     } catch (error) {
       throw new InternalServerErrorException('DELETE USER FAILED');
     }
-  }
-
-  async findAll() {
-    return await this.repositoryUser.find();
   }
 }
 
