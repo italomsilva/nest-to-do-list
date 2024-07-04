@@ -1,19 +1,20 @@
 # API de Lista de Tarefas com Nest e Typescript ✨
-Esta é uma API desenvolvida com NestJS e TypeScript que implementa uma lista de tarefas (To-Do List) com autenticação JWT e chave de acesso.
+Esta é uma API desenvolvida com NestJS e TypeScript que implementa uma lista de tarefas (To-Do List) com autenticação JWT e chave de acesso. O projeto segue a arquitetura MVC (Model-View-Controller), promovendo a separação de responsabilidades e facilitando a manutenção e escalabilidade do código.
 
 ## Funcionalidades da API
 A API de Lista de Tarefas permite aos usuários gerenciar suas tarefas de forma eficiente e segura. As principais funcionalidades incluem:
-
  - CRUD de Tarefas: Permite criar, ler, atualizar e excluir tarefas.
  - Autenticação JWT: Protege as rotas da API utilizando JSON Web Tokens (JWT) para garantir que apenas usuários autenticados possam acessar e modificar dados.
  - Chave de Acesso: Requer uma chave de acesso específica para interagir com a API, aumentando a segurança.
  - Gestão de Usuários: Registra, autentica, lista, edita e deleta um usuário.
 ## Tecnologias Utilizadas
- - NestJS: Framework Node.js para construção de aplicações escaláveis e eficientes.
- - TypeScript: Linguagem de programação que adiciona tipos estáticos ao JavaScript.
- - MySQL: Banco de dados relacional para armazenar dados das tarefas e usuários.
- - JWT: Para autenticação segura via tokens.
-
+ - NodeJs
+ - Typescript
+ - NestJS
+ - TypeORM
+ - MySQL
+ - Token JWT
+ - Swagger
 ## Regras de Uso
 Para usar a API de Lista de Tarefas, siga os passos abaixo:
 
@@ -53,17 +54,22 @@ npm run start
 Utilize ferramentas como Postman ou Insomnia para interagir com a API.
  - Em toda requisição adicione dois headers: um com o nome 'to-do-apikey' e valor 'v-apikey', e outro chamado 'auth-token' e adicione o valor do token que você receberá ao se registrar ou fazer login.
 
+## Documentação da API
+A documentação da API está disponível através do Swagger no endpoint `/documentation/swagger`. Esta documentação fornece uma visão detalhada dos endpoints disponíveis, bem como dos parâmetros e respostas esperados.
+
+Exemplo: Se tiver configurado `APP_PORT=3000`, para acessar a documentação, inicie o servidor e navegue até: `http://localhost:3000/documentation/swagger`. Se não, basta substituir `3000` da url pelo valor de `APP_PORT`. 
+
 ## Endpoints
+ - GET /user/find-all: Retorna uma lista de todos os usuários.
  - POST /user/sign-up: Registra um novo usuário.
  - POST /user/sign-in: Autentica um usuário.
- - POST /user/edit-user: Edita um usuário.
- - POST /user/delete-user: Deleta um usuário.
- - POST /user/find-all: Retorna uma lista de todos os usuários.
+ - PUT /user/edit-user: Edita um usuário.
+ - DELETE /user/delete-user: Deleta um usuário.
+ - GET /task/find-all: Retorna uma lista de todas as tarefas de um usuário.
  - POST /task/create: Cria uma tarefa.
- - POST /task/edit: Edita uma tarefa.
- - POST /task/delete: Deleta uma tarefa.
- - POST /task/find-all: Retorna uma lista de todas as tarefas de um usuário.
- - POST /task/toggle-completed: Altera o estado dde uma tarefa entre completa ou não.
+ - PUT /task/edit: Edita uma tarefa.
+ - PATCH /task/toggle-completed: Altera o estado dde uma tarefa entre completa ou não.
+ - DELETE /task/delete: Deleta uma tarefa.
 ## Licença
 Este projeto está licenciado sob a Licença MIT.
 
